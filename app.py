@@ -515,10 +515,12 @@ service_due = datetime.now() + timedelta(days=agent["rul_days"])
 service_due_str = service_due.strftime("%d %b %Y")
 confidence = float(np.clip(91 - sensor_noise * 4 - telemetry_drop * 1.3 + min(8, agent["anomaly_score"] / 12), 58, 96))
 
-if autoplay:
+if autoplay and st.session_state.cursor < len(series["t"]) - 1:
     st.session_state.cursor = min(st.session_state.cursor + 2, len(series["t"]) - 1)
     time.sleep(tick_ms / 1000.0)
     st.rerun()
+elif autoplay:
+    st.caption("Autoplay reached the latest telemetry tick. Use **Advance +12 ticks** or change scenario/asset to continue.")
 
 
 # ============================================================
