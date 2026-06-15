@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Interactive transformer and distribution telemetry AI agent demo.">
+  <title>BSES Distribution AI Agent</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">⚡</span><div><strong>POWER//PULSE</strong><small>Distribution intelligence</small></div></div>
+      <button class="close-menu" id="close-menu" aria-label="Close controls">×</button>
+      <section class="control-section">
+        <div class="section-kicker">Live simulation</div>
+        <label class="toggle-row"><span><b>Autoplay telemetry</b><small>Advance the live data stream</small></span><input id="autoplay" type="checkbox" checked><i></i></label>
+        <label>Refresh speed <output id="speed-value">380 ms</output><input id="speed" type="range" min="150" max="1500" value="380" step="10"></label>
+      </section>
+      <section class="control-section">
+        <div class="section-kicker">Network scope</div>
+        <label>Transformer / feeder<select id="asset"></select></label>
+        <label>Operating scenario<select id="scenario"></select></label>
+        <p class="control-note" id="scenario-note"></p>
+      </section>
+      <section class="control-section collapsible">
+        <button class="section-toggle" type="button" aria-expanded="true"><span><span class="section-kicker">Signal realism</span>Simulation parameters</span><span>−</span></button>
+        <div class="section-body">
+          <label>Sensor noise <output id="noise-value">0.7</output><input id="noise" type="range" min="0" max="3" value="0.7" step="0.1"></label>
+          <label>Asset degradation <output id="degradation-value">0.9</output><input id="degradation" type="range" min="0" max="2.5" value="0.9" step="0.1"></label>
+          <label>Telemetry dropout <output id="dropout-value">2%</output><input id="dropout" type="range" min="0" max="12" value="2" step="1"></label>
+        </div>
+      </section>
+      <section class="control-section collapsible">
+        <button class="section-toggle" type="button" aria-expanded="true"><span><span class="section-kicker">Operating limits</span>Alert thresholds</span><span>−</span></button>
+        <div class="section-body">
+          <label>Safe loading <output id="design-load-value">85%</output><input id="design-load" type="range" min="65" max="110" value="85"></label>
+          <label>Oil temperature <output id="oil-limit-value">85°C</output><input id="oil-limit" type="range" min="65" max="105" value="85"></label>
+          <label>Winding temperature <output id="winding-limit-value">105°C</output><input id="winding-limit" type="range" min="75" max="130" value="105"></label>
+          <label>Voltage tolerance <output id="voltage-band-value">6%</output><input id="voltage-band" type="range" min="3" max="12" value="6" step="0.5"></label>
+          <label>Allowed feeder loss <output id="loss-baseline-value">7.8%</output><input id="loss-baseline" type="range" min="4" max="18" value="7.8" step="0.1"></label>
+        </div>
+      </section>
+      <div class="sidebar-footer"><span class="live-dot"></span> Synthetic telemetry engine online</div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <button class="menu-button" id="menu-button" aria-label="Open controls">☰</button>
+        <div><div class="eyebrow">TRANSFORMER & DISTRIBUTION</div><h1>AI Operations Console</h1></div>
+        <div class="header-meta"><span id="clock"></span><span class="status-chip"><i></i> LIVE</span></div>
+      </header>
+
+      <div class="content">
+        <section class="hero card">
+          <div><div class="eyebrow">ACTIVE ASSET</div><h2 id="asset-title"></h2><p id="asset-meta"></p></div>
+          <div class="hero-state"><span id="status-badge" class="badge"></span><small>AI AGENT STATE</small></div>
+        </section>
+
+        <section class="metric-grid" id="executive-metrics"></section>
+
+        <div class="dashboard-grid">
+          <section class="card network-card">
+            <div class="card-heading"><div><div class="eyebrow">GRID TO CONSUMER</div><h3>Distribution network</h3></div><span class="tick-label">TICK <b id="tick-label">000</b></span></div>
+            <div class="network" id="network"></div>
+            <div class="network-insight"><span class="pulse-icon">✦</span><div><small>AI ROOT-CAUSE SIGNAL</small><strong id="root-cause"></strong></div></div>
+          </section>
+
+          <section class="card telemetry-card">
+            <div class="card-heading"><div><div class="eyebrow">REAL-TIME SIGNALS</div><h3>Live telemetry</h3></div><button id="advance" class="button">Advance +12</button></div>
+            <div class="mini-metrics" id="telemetry-metrics"></div>
+            <div class="tabs" role="tablist">
+              <button class="tab active" data-tab="telemetry">Telemetry</button>
+              <button class="tab" data-tab="diagnostics">Diagnostics</button>
+              <button class="tab" data-tab="genbi">GenBI</button>
+            </div>
+            <div class="tab-panel active" id="tab-telemetry"><div class="chart-wrap"><canvas id="telemetry-chart"></canvas></div><div class="chart-legend"><span class="cyan">Loading %</span><span class="orange">Oil °C</span><span class="pink">Loss %</span><span class="limit">Safe load</span></div></div>
+            <div class="tab-panel" id="tab-diagnostics"><div class="diagnostics-layout"><div class="gauge" id="rul-gauge"><div><b id="rul-value"></b><small>DAYS RUL</small></div></div><div class="chart-wrap compact"><canvas id="risk-chart"></canvas></div></div><div class="work-order" id="work-order"></div></div>
+            <div class="tab-panel" id="tab-genbi"><p class="muted">Ask a plain-English question about this asset's telemetry and health.</p><form class="query-form genbi-form"><input aria-label="GenBI question" placeholder="e.g. show last 80 ticks oil trend"><button class="button" type="submit">Analyze</button></form><div class="answer"></div><div class="chart-wrap query-chart" hidden><canvas></canvas></div><div class="kpi-table-wrap"><table id="kpi-table"><thead><tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr></thead><tbody></tbody></table></div></div>
+          </section>
+
+          <section class="card intelligence-card">
+            <div class="card-heading"><div><div class="eyebrow">AGENT INTERPRETATION</div><h3>Findings & action plan</h3></div><span id="confidence" class="confidence"></span></div>
+            <div class="intelligence-columns"><div><h4><span>01</span> Key findings</h4><ul id="findings"></ul></div><div><h4><span>02</span> Recommended actions</h4><ul id="actions"></ul></div></div>
+            <div class="service-strip"><div><small>NEXT SERVICE BY</small><strong id="service-date"></strong></div><div><small>EFFICIENCY LEAKAGE</small><strong id="efficiency-score"></strong></div><div><small>MAINTENANCE RISK</small><strong id="maintenance-score"></strong></div></div>
+          </section>
+
+          <section class="card quick-query-card">
+            <div class="eyebrow">GENBI QUICK QUERY</div><h3>Ask the distribution agent</h3><p class="muted">Rule-based, instant diagnostics from the live telemetry stream.</p>
+            <div class="query-chips"><button>Current risk</button><button>Why is anomaly high?</button><button>Feeder loss efficiency</button><button>Recommended diagnostics</button></div>
+            <form class="query-form quick-form"><input aria-label="Quick GenBI question" placeholder="Ask about risk, trends, losses or actions..."><button class="button" type="submit">Ask AI</button></form>
+            <div class="answer"></div><div class="chart-wrap query-chart" hidden><canvas></canvas></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
